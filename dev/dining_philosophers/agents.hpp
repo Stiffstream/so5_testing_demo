@@ -42,8 +42,8 @@ public :
 	}
 
 private :
-	state_t st_free{ this };
-	state_t st_taken{ this };
+	state_t st_free{ this, "free" };
+	state_t st_taken{ this, "taken" };
 };
 
 class philosopher_t final : public so_5::agent_t
