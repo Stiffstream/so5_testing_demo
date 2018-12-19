@@ -1,0 +1,17 @@
+syntax: glob
+
+.externals
+tmp
+dev/tmp
+dev/target
+dev/target_*
+dev/so_5
+dev/timertt
+dev/doctest
+o/*
+./wiki
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.log
+dev/local-build.rb
