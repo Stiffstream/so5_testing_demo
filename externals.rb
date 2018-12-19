@@ -1,7 +1,6 @@
 MxxRu::svn_externals :so5 do |e|
   e.url 'https://svn.code.sf.net/p/sobjectizer/repo/branches/so_5/5.5.24--event-queue-hook'
-  e.rev 3636
-  e.option '--ignore-externals'
+  e.rev 3656
 
   e.map_dir 'dev/so_5' => 'dev'
 end
