@@ -50,7 +50,7 @@ TEST_CASE( "fork" )
 
 	sobj.scenario().run_for(std::chrono::milliseconds(100));
 
-	REQUIRE(sobj.scenario().completed());
+	REQUIRE(tests::completed() == sobj.scenario().result());
 
 	REQUIRE("taken" == sobj.scenario().stored_state_name("take_when_free", "fork"));
 	REQUIRE("free" == sobj.scenario().stored_state_name("put_when_taken", "fork"));
@@ -116,7 +116,8 @@ TEST_CASE( "philosopher (takes both forks)" )
 
 	scenario.run_for(std::chrono::seconds(1));
 
-	REQUIRE(scenario.completed());
+	REQUIRE(tests::completed() == scenario.result());
+
 	REQUIRE("wait_left" == scenario.stored_state_name("stop_thinking", "philosopher"));
 	REQUIRE("wait_right" == scenario.stored_state_name("left_taken", "philosopher"));
 	REQUIRE("eating" == scenario.stored_state_name("right_taken", "philosopher"));
