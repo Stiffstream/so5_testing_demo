@@ -57,3 +57,69 @@ TEST_CASE( "fork" )
 
 }
 
+TEST_CASE( "philosopher (takes both forks)" )
+{
+	tests::testing_env_t sobj{
+		[](so_5::environment_params_t & params) {
+			params.message_delivery_tracer(
+					so_5::msg_tracing::std_cout_tracer());
+		}
+	};
+
+	so_5::agent_t * philosopher{};
+	so_5::agent_t * left_fork{};
+	so_5::agent_t * right_fork{};
+
+	sobj.environment().introduce_coop([&](so_5::coop_t & coop) {
+		left_fork = coop.make_agent<fork_t>();
+		right_fork = coop.make_agent<fork_t>();
+		philosopher = coop.make_agent<philosopher_t>(
+			"philosopher",
+			left_fork->so_direct_mbox(),
+			right_fork->so_direct_mbox());
+	});
+
+	auto & scenario = sobj.scenario();
+
+	scenario.define_step("stop_thinking")
+		.when( *philosopher
+				& tests::reacts_to<philosopher_t::msg_stop_thinking>()
+				& tests::store_state_name("philosopher") )
+		.constraints( tests::not_before(std::chrono::milliseconds(250)) );
+
+	scenario.define_step("take_left")
+		.when( *left_fork & tests::reacts_to<msg_take>() );
+
+	scenario.define_step("left_taken")
+		.when( *philosopher
+				& tests::reacts_to<msg_taken>()
+				& tests::store_state_name("philosopher") );
+
+	scenario.define_step("take_right")
+		.when( *right_fork & tests::reacts_to<msg_take>() );
+
+	scenario.define_step("right_taken")
+		.when( *philosopher
+				& tests::reacts_to<philosopher_t::msg_stop_thinking>()
+				& tests::store_state_name("philosopher") );
+
+	scenario.define_step("stop_eating")
+		.when( *philosopher
+				& tests::reacts_to<philosopher_t::msg_stop_thinking>()
+				& tests::store_state_name("philosopher") )
+		.constraints( tests::not_before(std::chrono::milliseconds(250)) );
+
+	scenario.define_step("return_forks")
+		.when_all( 
+				*left_fork & tests::reacts_to<msg_put>(),
+				*right_fork & tests::reacts_to<msg_put>() );
+
+	scenario.run_for(std::chrono::seconds(1));
+
+	REQUIRE(scenario.completed());
+	REQUIRE("wait_left" == scenario.stored_state_name("stop_thinking", "philosopher"));
+	REQUIRE("wait_right" == scenario.stored_state_name("left_taken", "philosopher"));
+	REQUIRE("eating" == scenario.stored_state_name("right_taken", "philosopher"));
+	REQUIRE("thinking" == scenario.stored_state_name("stop_eating", "philosopher"));
+}
+

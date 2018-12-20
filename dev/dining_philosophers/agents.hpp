@@ -48,10 +48,10 @@ private :
 
 class philosopher_t final : public so_5::agent_t
 {
+public :
 	struct msg_stop_thinking : public so_5::signal_t {};
 	struct msg_stop_eating : public so_5::signal_t {};
 
-public :
 	philosopher_t(
 		context_t ctx,
 		std::string name,
