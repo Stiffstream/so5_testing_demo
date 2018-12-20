@@ -28,27 +28,23 @@ TEST_CASE( "fork" )
 	});
 
 	sobj.scenario().define_step("put_when_free")
-		.impact([fork]{ so_5::send<msg_put>(*fork); })
+		.impact<msg_put>(*fork)
 		.when(*fork & tests::ignores<msg_put>());
 
 	sobj.scenario().define_step("take_when_free")
-		.impact([fork, philosopher]{
-				so_5::send<msg_take>(*fork, philosopher->so_direct_mbox());
-			})
+		.impact<msg_take>(*fork, philosopher->so_direct_mbox())
 		.when_all(
 			*fork & tests::reacts_to<msg_take>() & tests::store_state_name("fork"),
 			*philosopher & tests::reacts_to<msg_taken>());
 
 	sobj.scenario().define_step("take_when_taken")
-		.impact([fork, philosopher]{
-				so_5::send<msg_take>(*fork, philosopher->so_direct_mbox());
-			})
+		.impact<msg_take>(*fork, philosopher->so_direct_mbox())
 		.when_all(
 			*fork & tests::reacts_to<msg_take>(),
 			*philosopher & tests::reacts_to<msg_busy>());
 
 	sobj.scenario().define_step("put_when_taken")
-		.impact([fork]{ so_5::send<msg_put>(*fork); })
+		.impact<msg_put>(*fork)
 		.when(
 			*fork & tests::reacts_to<msg_put>() & tests::store_state_name("fork"));
 
