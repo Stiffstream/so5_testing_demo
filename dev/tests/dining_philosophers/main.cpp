@@ -100,12 +100,12 @@ TEST_CASE( "philosopher (takes both forks)" )
 
 	scenario.define_step("right_taken")
 		.when( *philosopher
-				& tests::reacts_to<philosopher_t::msg_stop_thinking>()
+				& tests::reacts_to<msg_taken>()
 				& tests::store_state_name("philosopher") );
 
 	scenario.define_step("stop_eating")
 		.when( *philosopher
-				& tests::reacts_to<philosopher_t::msg_stop_thinking>()
+				& tests::reacts_to<philosopher_t::msg_stop_eating>()
 				& tests::store_state_name("philosopher") )
 		.constraints( tests::not_before(std::chrono::milliseconds(250)) );
 
