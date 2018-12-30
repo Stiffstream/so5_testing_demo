@@ -79,7 +79,7 @@ TEST_CASE( "philosopher (takes both forks)" )
 			right_fork->so_direct_mbox());
 	});
 
-	auto & scenario = sobj.scenario();
+	auto scenario = sobj.scenario();
 
 	scenario.define_step("stop_thinking")
 		.when( *philosopher

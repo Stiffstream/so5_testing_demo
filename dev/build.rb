@@ -27,10 +27,11 @@ MxxRu::Cpp::composite_target( MxxRu::BUILD_ROOT ) {
 			'target', MxxRu::Cpp::PrjAwareRuntimeSubdirObjPlacement::USE_COMPILER_ID )
 	end
 
-	required_prj 'tests/dining_philosophers/prj_s.ut.rb'
+	required_prj 'tests/manager_logger/prj_s.ut.rb'
 	required_prj 'tests/ping_pong/prj_s.ut.rb'
+	required_prj 'tests/dining_philosophers/prj_s.ut.rb'
 
-	required_prj 'dining_philosophers/prj_s.rb'
 	required_prj 'ping_pong/prj_s.rb'
+	required_prj 'dining_philosophers/prj_s.rb'
 }
 
