@@ -5,7 +5,7 @@
 
 #include <so_5/experimental/testing.hpp>
 
-namespace tests = so_5::experimental::testing::v1;
+namespace tests = so_5::experimental::testing;
 
 TEST_CASE( "ping_pong" )
 {
