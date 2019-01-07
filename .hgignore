@@ -9,6 +9,7 @@ dev/so_5
 dev/timertt
 dev/doctest
 o/*
+cmake_build/*
 ./wiki
 *.sublime-project
 *.sublime-workspace

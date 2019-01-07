@@ -1,0 +1,3 @@
+add_subdirectory(manager_logger)
+add_subdirectory(ping_pong)
+add_subdirectory(dining_philosophers)
