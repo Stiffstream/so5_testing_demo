@@ -124,3 +124,109 @@ TEST_CASE( "philosopher (takes both forks)" )
 	REQUIRE("thinking" == scenario.stored_state_name("stop_eating", "philosopher"));
 }
 
+class always_busy_fork_t final : public so_5::agent_t {
+public:
+	always_busy_fork_t(context_t ctx) : so_5::agent_t{std::move(ctx)} {
+		so_subscribe_self().event([](mhood_t<msg_take> cmd) {
+				so_5::send<msg_busy>(cmd->m_who);
+			});
+	}
+};
+
+TEST_CASE( "philosopher (left fork is busy)" )
+{
+	tests::testing_env_t sobj;
+
+	so_5::agent_t * philosopher{};
+	so_5::agent_t * left_fork{};
+	so_5::agent_t * right_fork{};
+
+	sobj.environment().introduce_coop([&](so_5::coop_t & coop) {
+		left_fork = coop.make_agent<always_busy_fork_t>();
+		right_fork = coop.make_agent<fork_t>();
+		philosopher = coop.make_agent<philosopher_t>(
+			"philosopher",
+			left_fork->so_direct_mbox(),
+			right_fork->so_direct_mbox());
+	});
+
+	auto scenario = sobj.scenario();
+
+	scenario.define_step("stop_thinking")
+		.when( *philosopher
+				& tests::reacts_to<philosopher_t::msg_stop_thinking>()
+				& tests::store_state_name("philosopher") )
+		.constraints( tests::not_before(std::chrono::milliseconds(250)) );
+
+	scenario.define_step("take_left")
+		.when( *left_fork & tests::reacts_to<msg_take>() );
+
+	scenario.define_step("left_busy")
+		.when( *philosopher
+				& tests::reacts_to<msg_busy>()
+				& tests::store_state_name("philosopher") );
+
+	scenario.run_for(std::chrono::seconds(1));
+
+	REQUIRE(tests::completed() == scenario.result());
+
+	REQUIRE("wait_left" == scenario.stored_state_name("stop_thinking", "philosopher"));
+	REQUIRE("thinking" == scenario.stored_state_name("left_busy", "philosopher"));
+}
+
+TEST_CASE( "philosopher (right fork is busy)" )
+{
+	tests::testing_env_t sobj;
+
+	so_5::agent_t * philosopher{};
+	so_5::agent_t * left_fork{};
+	so_5::agent_t * right_fork{};
+
+	sobj.environment().introduce_coop([&](so_5::coop_t & coop) {
+		left_fork = coop.make_agent<fork_t>();
+		right_fork = coop.make_agent<always_busy_fork_t>();
+		philosopher = coop.make_agent<philosopher_t>(
+			"philosopher",
+			left_fork->so_direct_mbox(),
+			right_fork->so_direct_mbox());
+	});
+
+	auto scenario = sobj.scenario();
+
+	scenario.define_step("stop_thinking")
+		.when( *philosopher
+				& tests::reacts_to<philosopher_t::msg_stop_thinking>()
+				& tests::store_state_name("philosopher") )
+		.constraints( tests::not_before(std::chrono::milliseconds(250)) );
+
+	scenario.define_step("take_left")
+		.when( *left_fork & tests::reacts_to<msg_take>() );
+
+	scenario.define_step("left_taken")
+		.when( *philosopher
+				& tests::reacts_to<msg_taken>()
+				& tests::store_state_name("philosopher") );
+
+	scenario.define_step("take_right")
+		.when( *right_fork & tests::reacts_to<msg_take>() );
+
+	scenario.define_step("right_is_busy")
+		.when( *philosopher
+				& tests::reacts_to<msg_busy>()
+				& tests::store_state_name("philosopher") );
+
+	scenario.define_step("put_left")
+		.when( *left_fork
+				& tests::reacts_to<msg_put>()
+				& tests::store_state_name("fork") );
+
+	scenario.run_for(std::chrono::seconds(1));
+
+	REQUIRE(tests::completed() == scenario.result());
+
+	REQUIRE("wait_left" == scenario.stored_state_name("stop_thinking", "philosopher"));
+	REQUIRE("wait_right" == scenario.stored_state_name("left_taken", "philosopher"));
+	REQUIRE("thinking" == scenario.stored_state_name("right_is_busy", "philosopher"));
+	REQUIRE("free" == scenario.stored_state_name("put_left", "fork"));
+}
+
