@@ -14,7 +14,7 @@ TEST_CASE( "manager_logger" )
 	logger_t * logger{};
 	manager_t * manager{};
 	sobj.environment().introduce_coop(
-		so_5::disp::active_obj::create_private_disp(sobj.environment())->binder(),
+		so_5::disp::active_obj::make_dispatcher(sobj.environment()).binder(),
 		[&](so_5::coop_t & coop) {
 			logger = coop.make_agent< logger_t >();
 			manager = coop.make_agent< manager_t >("Fred", logger->so_direct_mbox());

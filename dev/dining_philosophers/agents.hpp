@@ -63,36 +63,36 @@ public :
 		,	m_right_fork( std::move( right_fork ) )
 	{}
 
-	virtual void so_define_agent() override
+	void so_define_agent() override
 	{
-		st_thinking.event< msg_stop_thinking >( [=] {
+		st_thinking.event( [=](mhood_t< msg_stop_thinking >) {
 				show_msg( "become hungry, try to take left fork" );
 				this >>= st_wait_left;
 				so_5::send< msg_take >( m_left_fork, so_direct_mbox() );
 			} );
 
-		st_wait_left.event< msg_taken >( [=] {
+		st_wait_left.event( [=](mhood_t< msg_taken >) {
 				show_msg( "left fork taken, try to take right fork" );
 				this >>= st_wait_right;
 				so_5::send< msg_take >( m_right_fork, so_direct_mbox() );
 			} )
-			.event< msg_busy >( [=] {
+			.event( [=](mhood_t< msg_busy >) {
 				show_msg( "left fork is busy, return to thinking" );
 				think();
 			} );
 
-		st_wait_right.event< msg_taken >( [=] {
+		st_wait_right.event( [=](mhood_t< msg_taken >) {
 				show_msg( "right fork taken, start eating" );
 				this >>= st_eating;
 				so_5::send_delayed< msg_stop_eating >( *this, pause() );
 			} )
-			.event< msg_busy >( [=] {
+			.event( [=](mhood_t< msg_busy >) {
 				show_msg( "right fork is busy, put left fork, return to thinking" );
 				so_5::send< msg_put >( m_left_fork );
 				think();
 			} );
 
-		st_eating.event< msg_stop_eating >( [=] {
+		st_eating.event( [=](mhood_t< msg_stop_eating >) {
 				show_msg( "stop eating, put forks, return to thinking" );
 				so_5::send< msg_put >( m_right_fork );
 				so_5::send< msg_put >( m_left_fork );
@@ -100,7 +100,7 @@ public :
 			} );
 	}
 
-	virtual void so_evt_start() override
+	void so_evt_start() override
 	{
 		think();
 	}
@@ -140,3 +140,4 @@ private :
 		return std::chrono::milliseconds( 250 + random_value( 0, 250 ) );
 	}
 };
+
