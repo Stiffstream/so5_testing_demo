@@ -7,6 +7,8 @@
 
 namespace tests = so_5::experimental::testing;
 
+using namespace std::chrono_literals;
+
 TEST_CASE( "fork" )
 {
 	class pseudo_philosopher_t final : public so_5::agent_t {
@@ -48,7 +50,7 @@ TEST_CASE( "fork" )
 		.when(
 			*fork & tests::reacts_to<msg_put>() & tests::store_state_name("fork"));
 
-	sobj.scenario().run_for(std::chrono::milliseconds(100));
+	sobj.scenario().run_for(100ms);
 
 	REQUIRE(tests::completed() == sobj.scenario().result());
 
@@ -85,7 +87,7 @@ TEST_CASE( "philosopher (takes both forks)" )
 		.when( *philosopher
 				& tests::reacts_to<philosopher_t::msg_stop_thinking>()
 				& tests::store_state_name("philosopher") )
-		.constraints( tests::not_before(std::chrono::milliseconds(250)) );
+		.constraints( tests::not_before(250ms) );
 
 	scenario.define_step("take_left")
 		.when( *left_fork & tests::reacts_to<msg_take>() );
@@ -107,14 +109,14 @@ TEST_CASE( "philosopher (takes both forks)" )
 		.when( *philosopher
 				& tests::reacts_to<philosopher_t::msg_stop_eating>()
 				& tests::store_state_name("philosopher") )
-		.constraints( tests::not_before(std::chrono::milliseconds(250)) );
+		.constraints( tests::not_before(250ms) );
 
 	scenario.define_step("return_forks")
 		.when_all( 
 				*left_fork & tests::reacts_to<msg_put>(),
 				*right_fork & tests::reacts_to<msg_put>() );
 
-	scenario.run_for(std::chrono::seconds(1));
+	scenario.run_for(1s);
 
 	REQUIRE(tests::completed() == scenario.result());
 
@@ -156,7 +158,7 @@ TEST_CASE( "philosopher (left fork is busy)" )
 		.when( *philosopher
 				& tests::reacts_to<philosopher_t::msg_stop_thinking>()
 				& tests::store_state_name("philosopher") )
-		.constraints( tests::not_before(std::chrono::milliseconds(250)) );
+		.constraints( tests::not_before(250ms) );
 
 	scenario.define_step("take_left")
 		.when( *left_fork & tests::reacts_to<msg_take>() );
@@ -166,7 +168,7 @@ TEST_CASE( "philosopher (left fork is busy)" )
 				& tests::reacts_to<msg_busy>()
 				& tests::store_state_name("philosopher") );
 
-	scenario.run_for(std::chrono::seconds(1));
+	scenario.run_for(1s);
 
 	REQUIRE(tests::completed() == scenario.result());
 
@@ -197,7 +199,7 @@ TEST_CASE( "philosopher (right fork is busy)" )
 		.when( *philosopher
 				& tests::reacts_to<philosopher_t::msg_stop_thinking>()
 				& tests::store_state_name("philosopher") )
-		.constraints( tests::not_before(std::chrono::milliseconds(250)) );
+		.constraints( tests::not_before(250ms) );
 
 	scenario.define_step("take_left")
 		.when( *left_fork & tests::reacts_to<msg_take>() );
@@ -220,7 +222,7 @@ TEST_CASE( "philosopher (right fork is busy)" )
 				& tests::reacts_to<msg_put>()
 				& tests::store_state_name("fork") );
 
-	scenario.run_for(std::chrono::seconds(1));
+	scenario.run_for(1s);
 
 	REQUIRE(tests::completed() == scenario.result());
 

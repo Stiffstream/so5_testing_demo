@@ -1,10 +1,12 @@
-This repository contains examples of unit-tests written by using a new `so_5::experimental::testing` functionality from SO-5.5.24.
+This repository contains examples of unit-tests written by using `so_5::experimental::testing` functionality from SO-5.6.
+
+**NOTE.** *These examples were upgraded to SObjectizer-5.6 in May 2019. For old versions of examples written for SObjectizer-5.5.24 please use tag "v.1.0-so5.5".*
 
 # How To Obtain And Try?
 
 ## Prerequisites
 
-A C++ complier with more or less good support of C++14. We have tried gcc-5.4, clang-3.8 and Visual C++ 15.7.
+A C++ complier with support of C++17. We have tried gcc-7, clang-6 and Visual C++ 15.9.
 
 ## How To Obtain?
 
@@ -60,3 +62,4 @@ The following chain of actions is necessary for building with MxxRu:
 cd so5_testing_demo/dev
 ruby build.rb
 ~~~~~
+

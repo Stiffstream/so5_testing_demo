@@ -7,6 +7,8 @@
 
 namespace tests = so_5::experimental::testing;
 
+using namespace std::chrono_literals;
+
 TEST_CASE( "manager_logger" )
 {
 	tests::testing_env_t sobj;
@@ -28,7 +30,7 @@ TEST_CASE( "manager_logger" )
 	sobj.scenario().define_step("order_logged")
 		.when(*logger & tests::reacts_to<logger_t::log_new_order>());
 
-	sobj.scenario().run_for(std::chrono::milliseconds(100));
+	sobj.scenario().run_for(100ms);
 
 	REQUIRE(tests::completed() == sobj.scenario().result());
 

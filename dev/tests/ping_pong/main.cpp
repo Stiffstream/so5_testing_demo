@@ -7,6 +7,8 @@
 
 namespace tests = so_5::experimental::testing;
 
+using namespace std::chrono_literals;
+
 TEST_CASE( "ping_pong" )
 {
 	tests::testing_env_t sobj;
@@ -27,7 +29,7 @@ TEST_CASE( "ping_pong" )
 	sobj.scenario().define_step("pong")
 		.when(*pinger & tests::reacts_to<pong>());
 
-	sobj.scenario().run_for(std::chrono::milliseconds(100));
+	sobj.scenario().run_for(100ms);
 
 	REQUIRE(tests::completed() == sobj.scenario().result());
 }
