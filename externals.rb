@@ -1,7 +1,7 @@
 MxxRu::arch_externals :so5 do |e|
-  e.url 'https://bitbucket.org/sobjectizerteam/sobjectizer/downloads/so-5.6.0-b1.zip'
+  e.url 'https://github.com/Stiffstream/sobjectizer/releases/download/v.5.6.1/so-5.6.1.zip'
 
-  e.sha512 '1682d77b9aaf7ed79722639cc9ccb803ce091506cf4cdb7338e54b0982b76afe09b35d99c562ee1c4e8e01a3bba586888d4c5931882be72ac4bc31b0c0edcca3'
+  e.sha512 '7c679472adec8023d693b014802c176390e294b1ea61a7ebece9d2007937dba04b6c422eded25c4d82f3011bef726d350a942ba78763e0b89ae857feb891b824'
 
   e.map_dir 'dev/so_5' => 'dev'
 end

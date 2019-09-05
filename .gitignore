@@ -1,0 +1,16 @@
+/.externals
+/tmp
+/dev/tmp
+/dev/target
+/dev/target_*
+/dev/so_5
+/dev/timertt
+/dev/doctest
+/o/*
+/cmake_build/*
+wiki
+*.sublime-project
+*.sublime-workspace
+.swp
+*.log
+/dev/local-build.rb
