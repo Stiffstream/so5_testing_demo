@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
+project(so5_testing_demo CXX)
+
 set(CMAKE_CXX_STANDARD 17)
 
 set(SOBJECTIZER_BUILD_SHARED OFF)
